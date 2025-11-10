@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Convenio - UCC{% endblock %}
+
+{% block content %}
+<h1 class="page-title">➕ Crear Nuevo Convenio</h1>
+<div class="breadcrumb">Inicio > Gestión de convenios > Crear convenio</div>
+
+<div class="table-container">
+    <div style="padding: 30px;">
+        <h2 style="margin-bottom: 20px; color: #333;">Formulario de Nuevo Convenio</h2>
+        <p style="color: #666; margin-bottom: 30px;">Complete la información del convenio que desea crear.</p>
+        
+        <form method="post" style="display: grid; gap: 20px;">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label class="form-label">Empresa/Entidad</label>
+                    <input type="text" name="empresa_entidad" class="form-input" placeholder="Nombre de la empresa" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo de Convenio</label>
+                    <select name="tipo" class="form-input" required>
+                        <option value="">Seleccione el tipo</option>
+                        <option value="marco">Marco</option>
+                        <option value="practicas">Prácticas</option>
+                        <option value="bienestar">Bienestar</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label class="form-label">Fecha de Inicio</label>
+                    <input type="date" name="fecha_inicio" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fecha de Vencimiento</label>
+                    <input type="date" name="fecha_vencimiento" class="form-input" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Supervisor Asignado</label>
+                <select name="supervisor" class="form-input">
+                    <option value="">Seleccione un supervisor</option>
+                    {% for supervisor in supervisores %}
+                        <option value="{{ supervisor.id }}">{{ supervisor.get_full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <textarea name="descripcion" class="form-input" rows="4" placeholder="Descripción del convenio"></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px;">
+                <a href="/convenios/" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Crear Convenio</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

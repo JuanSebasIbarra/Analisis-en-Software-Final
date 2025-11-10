@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle del Convenio - UCC{% endblock %}
+
+{% block content %}
+<h1 class="page-title">📋 Detalle del Convenio</h1>
+<div class="breadcrumb">Inicio > Gestión de convenios > {{ convenio.empresa_entidad }}</div>
+
+<div class="table-container">
+    <div style="padding: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 style="color: #333;">{{ convenio.empresa_entidad }}</h2>
+            <div>
+                <a href="/convenios/{{ convenio.id }}/editar/" class="btn btn-primary">✏️ Editar</a>
+                <a href="/convenios/" class="btn btn-secondary">← Volver</a>
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            <div>
+                <h3 style="margin-bottom: 20px; color: #333;">Información General</h3>
+                <div style="display: grid; gap: 15px;">
+                    <div>
+                        <strong>Tipo:</strong> {{ convenio.get_tipo_display }}
+                    </div>
+                    <div>
+                        <strong>Estado:</strong> 
+                        {% if convenio.estado == 'activo' %}
+                            <span class="status-badge status-activo">🟢 Activo</span>
+                        {% elif convenio.estado == 'por_vencer' %}
+                            <span class="status-badge status-por-vencer">🟡 Por vencer</span>
+                        {% elif convenio.estado == 'vencido' %}
+                            <span class="status-badge status-vencido">🔴 Vencido</span>
+                        {% else %}
+                            <span class="status-badge status-pendiente">{{ convenio.get_estado_display }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <strong>Fecha de Inicio:</strong> {{ convenio.fecha_inicio|date:"d/m/Y" }}
+                    </div>
+                    <div>
+                        <strong>Fecha de Vencimiento:</strong> {{ convenio.fecha_vencimiento|date:"d/m/Y" }}
+                    </div>
+                    <div>
+                        <strong>Supervisor:</strong> {{ convenio.supervisor.get_full_name|default:convenio.supervisor.username }}
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <h3 style="margin-bottom: 20px; color: #333;">Descripción</h3>
+                <p style="color: #666; line-height: 1.6;">{{ convenio.descripcion|default:"No hay descripción disponible." }}</p>
+            </div>
+        </div>
+        
+        {% if informes %}
+        <div style="margin-top: 40px;">
+            <h3 style="margin-bottom: 20px; color: #333;">Informes Relacionados</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Estado</th>
+                            <th>Fecha de Entrega</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for informe in informes %}
+                        <tr>
+                            <td>{{ informe.titulo }}</td>
+                            <td>
+                                {% if informe.estado == 'aprobado' %}
+                                    <span class="status-badge status-aprobado">✅ Aprobado</span>
+                                {% elif informe.estado == 'pendiente' %}
+                                    <span class="status-badge status-pendiente">⏳ Pendiente</span>
+                                {% else %}
+                                    <span class="status-badge status-rechazado">❌ Rechazado</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ informe.fecha_entrega|date:"d/m/Y" }}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="action-btn btn-view">👁️ Ver</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

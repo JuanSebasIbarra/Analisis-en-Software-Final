@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Convenios - UCC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #62e5e8 0%, #6ff7f7 100%);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #63f0f3;
+            font-size: 20px;
+        }
+
+        .university-name {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .search-bar {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 300px;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .icon-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff5252;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            color: #63d8d8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Container */
+        .container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            overflow-y: auto;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .menu-item:hover {
+            background: #f5f5f5;
+            color: #58dde2;
+            padding-left: 30px;
+        }
+
+        .menu-item.active {
+            background: #e8f5e9;
+            color: #5fe3da;
+            border-left: 4px solid #56efe7;
+            font-weight: 600;
+        }
+
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .page-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .breadcrumb {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e8e8e8;
+        }
+
+        .tab {
+            padding: 18px 30px;
+            cursor: pointer;
+            color: #777;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab:hover {
+            color: #58dde2;
+            background: #f9f9f9;
+        }
+
+        .tab.active {
+            color: #58dde2;
+            border-bottom-color: #58dde2;
+            font-weight: 600;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Filters */
+        .filters-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        select, input[type="date"] {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        select:focus, input[type="date"]:focus {
+            border-color: #58dde2;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #04cfaa;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #46dad8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(70,218,216,0.3);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #555;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            background: #f8f9fa;
+            color: #555;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e8e8e8;
+        }
+
+        td {
+            padding: 18px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-activo {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-por-vencer {
+            background: #fff8e1;
+            color: #f57f17;
+        }
+
+        .status-vencido {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-revision {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .status-juridico {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+
+        .status-firma {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-aprobado {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-rechazado {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        /* Process Indicator */
+        .process-steps {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .step {
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: #f0f0f0;
+            color: #999;
+            font-weight: 500;
+        }
+
+        .step.completed {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .step.current {
+            background: #2196F3;
+            color: white;
+        }
+
+        /* Action Buttons */
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .btn-view {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .btn-view:hover {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-renew {
+            background: #fff8e1;
+            color: #f57f17;
+        }
+
+        .btn-renew:hover {
+            background: #f57f17;
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .btn-cancel:hover {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .btn-edit:hover {
+            background: #7b1fa2;
+            color: white;
+        }
+
+        /* Stats Summary */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card-small {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-icon.green { background: #e8f5e9; }
+        .stat-icon.yellow { background: #fff8e1; }
+        .stat-icon.red { background: #ffebee; }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-value-small {
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .stat-label-small {
+            font-size: 13px;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .filters-section {
+                flex-direction: column;
+            }
+            .action-btns {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo">UCC</div>
+            <div class="university-name">
+                UNIVERSIDAD<br>
+                COOPERATIVA<br>
+                DE COLOMBIA
+            </div>
+        </div>
+        
+        <div class="header-actions">
+            <div class="search-bar">
+                <svg width="18" height="18" fill="#999" viewBox="0 0 24 24">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <input type="text" placeholder="Buscar convenio, empresa o supervisor...">
+            </div>
+            
+            <div class="icon-btn">
+                <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                </svg>
+                <span class="badge">6</span>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">JP</div>
+                <div>
+                    <div style="font-size: 14px; font-weight: 600;">Jefe Proyección</div>
+                    <div style="font-size: 12px; opacity: 0.9;">Administrador</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="menu-item">
+                    <span class="menu-icon"></span>
+                    <a href="prueba.html" style="text-decoration: none; color: inherit;">Inicio</a>
+                </li>
+                <li class="menu-item active">
+                    <span class="menu-icon"></span>
+                    Gestión de convenios
+                </li>
+                <li class="menu-item">
+                    <span class="menu-icon"></span>
+                    <a href="supervicionInformes.html" style="text-decoration: none; color: inherit;">Supervisión e informes</a>
+                </li>
+                <li class="menu-item">
+                    <span class="menu-icon"></span>
+                    <a href="gestionUsuarios.html" style="text-decoration: none; color: inherit;">Gestion de Usuarios</a>
+                </li>
+                <li class="menu-item">
+                    <span class="menu-icon"></span>
+                    Reportes y estadísticas
+                </li>
+                <li class="menu-item">
+                    <span class="menu-icon"></span>
+                    Configuración
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1 class="page-title">📋 Gestión de Convenios</h1>
+            <div class="breadcrumb">Inicio > Gestión de convenios</div>
+
+            <!-- Stats Summary -->
+            <div class="stats-summary">
+                <div class="stat-card-small">
+                    <div class="stat-icon green">✓</div>
+                    <div class="stat-info">
+                        <div class="stat-value-small" style="color: #4CAF50;">18</div>
+                        <div class="stat-label-small">Convenios Activos</div>
+                    </div>
+                </div>
+                <div class="stat-card-small">
+                    <div class="stat-icon yellow">⚠</div>
+                    <div class="stat-info">
+                        <div class="stat-value-small" style="color: #FFA000;">5</div>
+                        <div class="stat-label-small">Por Vencer</div>
+                    </div>
+                </div>
+                <div class="stat-card-small">
+                    <div class="stat-icon red">✕</div>
+                    <div class="stat-info">
+                        <div class="stat-value-small" style="color: #F44336;">2</div>
+                        <div class="stat-label-small">Vencidos</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs-container">
+                <div class="tabs">
+                    <div class="tab active">📝 Lista de Convenios</div>
+                </div>
+
+                <!-- Tab 1: Lista de Convenios -->
+                <div class="tab-content active">
+                    <div class="filters-section">
+                        <div class="filter-group">
+                            <label class="filter-label">Estado</label>
+                            <select>
+                                <option>Todos los estados</option>
+                                <option>Activos</option>
+                                <option>Por vencer</option>
+                                <option>Vencidos</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Tipo</label>
+                            <select>
+                                <option>Todos los tipos</option>
+                                <option>Marco</option>
+                                <option>Prácticas</option>
+                                <option>Bienestar</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Fecha desde</label>
+                            <input type="date">
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Fecha hasta</label>
+                            <input type="date">
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Empresa / Entidad</th>
+                                    <th>Tipo</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Vencimiento</th>
+                                    <th>Estado</th>
+                                    <th>Supervisor</th>
+                                    <th>Actividades</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Fundación Social Activa</strong></td>
+                                    <td>Marco</td>
+                                    <td>15/01/2024</td>
+                                    <td>15/01/2027</td>
+                                    <td><span class="status-badge status-activo">🟢 Activo</span></td>
+                                    <td>Juan Pérez</td>
+                                    <td>
+                                        <div class="action-btns">
+                                                <button class="action-btn btn-view">👁️ Ver</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Empresas Unidas S.A.</strong></td>
+                                    <td>Prácticas</td>
+                                    <td>10/06/2023</td>
+                                    <td>10/12/2025</td>
+                                    <td><span class="status-badge status-por-vencer">🟡 Por vencer</span></td>
+                                    <td>María López</td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn btn-view">👁️ Ver</button>
+                                            
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Innovatech Solutions</strong></td>
+                                    <td>Prácticas</td>
+                                    <td>01/05/2022</td>
+                                    <td>01/11/2025</td>
+                                    <td><span class="status-badge status-vencido">🔴 Vencido</span></td>
+                                    <td>Carlos Torres</td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn btn-view">👁️ Ver</button>
+                                            
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Centro de Bienestar Integral</strong></td>
+                                    <td>Bienestar</td>
+                                    <td>20/03/2024</td>
+                                    <td>20/03/2026</td>
+                                    <td><span class="status-badge status-activo">🟢 Activo</span></td>
+                                    <td>Ana Rodríguez</td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn btn-view">👁️ Ver</button>
+                                            
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Hospital Regional Norte</strong></td>
+                                    <td>Prácticas</td>
+                                    <td>01/08/2024</td>
+                                    <td>01/02/2026</td>
+                                    <td><span class="status-badge status-por-vencer">🟡 Por vencer</span></td>
+                                    <td>Luis Gómez</td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn btn-view">👁️ Ver</button>
+                                            
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Renovación y Cancelación -->
+

@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisión e Informes - UCC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #62e5e8 0%, #6ff7f7 100%);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #63f0f3;
+            font-size: 20px;
+        }
+
+        .university-name {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .search-bar {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 300px;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .icon-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff5252;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            color: #63d8d8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Container */
+        .container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            overflow-y: auto;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .menu-item:hover {
+            background: #f5f5f5;
+            color: #58dde2;
+            padding-left: 30px;
+        }
+
+        .menu-item.active {
+            background: #e8f5e9;
+            color: #5fe3da;
+            border-left: 4px solid #56efe7;
+            font-weight: 600;
+        }
+
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .page-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .breadcrumb {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-icon.blue { background: #e3f2fd; }
+        .stat-icon.green { background: #e8f5e9; }
+        .stat-icon.orange { background: #fff8e1; }
+        .stat-icon.purple { background: #f3e5f5; }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        /* Supervisor Cards Section */
+        .supervisors-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 25px 25px 0 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .supervisor-list {
+            padding: 0 25px 25px 25px;
+        }
+
+        .supervisor-card {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+
+        .supervisor-card:hover {
+            background: #f0f0f0;
+            transform: translateY(-1px);
+        }
+
+        .supervisor-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #4CAF50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 20px;
+        }
+
+        .supervisor-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .supervisor-details {
+            flex: 1;
+        }
+
+        .supervisor-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .supervisor-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .supervisor-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-alert {
+            background: #FFC107;
+            color: white;
+        }
+
+        .btn-alert:hover {
+            background: #FFB300;
+        }
+
+        .btn-remove {
+            background: #F44336;
+            color: white;
+        }
+
+        .btn-remove:hover {
+            background: #D32F2F;
+        }
+
+        .dropdown-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            transition: transform 0.3s;
+        }
+
+        .dropdown-btn.active {
+            transform: rotate(180deg);
+        }
+
+        .reports-dropdown {
+            display: none;
+            background: white;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+
+        .reports-dropdown.active {
+            display: block !important;
+        }
+
+        .report-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.3s;
+        }
+
+        .report-item:hover {
+            background: #f9f9f9;
+        }
+
+        .report-item:last-child {
+            border-bottom: none;
+        }
+
+        .report-info {
+            flex: 1;
+        }
+
+        .report-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .report-date {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .report-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-pdf {
+            background: #2196F3;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .btn-pdf:hover {
+            background: #1976D2;
+        }
+
+        .btn-approve {
+            background: #4CAF50;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .btn-approve:hover {
+            background: #45a049;
+        }
+
+        .btn-pending {
+            background: #FF9800;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .btn-pending:hover {
+            background: #F57C00;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .supervisor-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .supervisor-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo">UCC</div>
+            <div class="university-name">
+                UNIVERSIDAD<br>
+                COOPERATIVA<br>
+                DE COLOMBIA
+            </div>
+        </div>
+        
+        <div class="header-actions">
+            <div class="search-bar">
+                <svg width="18" height="18" fill="#999" viewBox="0 0 24 24">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <input type="text" placeholder="Buscar convenio, empresa o supervisor...">
+            </div>
+            
+            <div class="icon-btn">
+                <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                </svg>
+                <span class="badge">6</span>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">JP</div>
+                <div>
+                    <div style="font-size: 14px; font-weight: 600;">Jefe Proyección</div>
+                    <div style="font-size: 12px; opacity: 0.9;">Administrador</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="menu-item">
+                    <span></span>
+                    <a href="prueba.html" style="text-decoration: none; color: inherit;">Inicio</a>
+                </li>
+                <li class="menu-item">
+                    <span></span>
+                    <a href="gestionConvenios.html" style="text-decoration: none; color: inherit;">Gestión de convenios</a>
+                </li>
+                <li class="menu-item active">
+                    <span></span>
+                    Supervisión e informes
+                </li>
+                <li class="menu-item">
+                    <span></span>
+                    <a href="gestionUsuarios.html" style="text-decoration: none; color: inherit;">Gestion de Usuarios</a>
+                </li>
+                <li class="menu-item">
+                    <span></span>
+                    Reportes y estadísticas
+                </li>
+                <li class="menu-item">
+                    <span></span>
+                    Configuración
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+            <div class="main-content">
+            <h1 class="page-title">👁️ Supervisión e Informes</h1>
+            <div class="breadcrumb">Inicio > Supervisión e informes</div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">👥</div>
+                    <div class="stat-info">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Supervisores Activos</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">✓</div>
+                    <div class="stat-info">
+                        <div class="stat-value">34</div>
+                        <div class="stat-label">Informes Aprobados</div>
+                    </div>
+                </div>
+            <div class="stat-card">
+                    <div class="stat-icon orange">⏳</div>
+                    <div class="stat-info">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Informes Pendientes</div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Supervisores con Convenios Asignados -->
+            <div class="supervisors-section">
+                <div class="section-header">
+                    <h2 class="section-title">👥 Supervisores con Convenios Asignados</h2>
+                </div>
+                
+                <div class="supervisor-list">
+                    <div class="supervisor-card">
+                        <div class="supervisor-avatar">JP</div>
+                        <div class="supervisor-info">
+                            <div class="supervisor-details">
+                                <div class="supervisor-name">Juan Pérez López</div>
+                                <div class="supervisor-meta">
+                                    <div class="meta-item">
+                                        <span>📄</span>
+                                        <span>Convenio: Fundación Social Activa</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📊</span>
+                                        <span>Informes: 5</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📅</span>
+                                        <span>Último: 15/10/2025</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="supervisor-actions">
+                                <button class="action-btn btn-alert">🔔 Enviar Alerta</button>
+                                <button class="dropdown-btn" onclick="toggleDropdown('reports-jp')">▼</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reports-dropdown" id="reports-jp">
+                            <div class="report-item">
+                                <div class="report-info">
+                                    <div class="report-title">Informe Semestral Q2 2025</div>
+                                    <div class="report-date">15/10/2025</div>
+                                </div>
+                                <div class="report-actions">
+                                    <button class="btn-pdf">📄 Ver PDF</button>
+                                    <button class="btn-approve">✓ Aprobar</button>
+                                    <button class="btn-pending">⏳ Pendiente</button>
+                                </div>
+                            </div>
+                            <div class="report-item">
+                                <div class="report-info">
+                                    <div class="report-title">Informe Mensual Septiembre</div>
+                                    <div class="report-date">02/10/2025</div>
+                                </div>
+                                <div class="report-actions">
+                                    <button class="btn-pdf">📄 Ver PDF</button>
+                                    <button class="btn-approve">✓ Aprobar</button>
+                                    <button class="btn-pending">⏳ Pendiente</button>
+                                </div>
+                            </div>
+                            <div class="report-item">
+                                <div class="report-info">
+                                    <div class="report-title">Informe de Actividades Agosto</div>
+                                    <div class="report-date">28/09/2025</div>
+                                </div>
+                                <div class="report-actions">
+                                    <button class="btn-pdf">📄 Ver PDF</button>
+                                    <button class="btn-approve">✓ Aprobar</button>
+                                    <button class="btn-pending">⏳ Pendiente</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="supervisor-card">
+                        <div class="supervisor-avatar">ML</div>
+                        <div class="supervisor-info">
+                            <div class="supervisor-details">
+                                <div class="supervisor-name">María López García</div>
+                                <div class="supervisor-meta">
+                                    <div class="meta-item">
+                                        <span>📄</span>
+                                        <span>Convenio: Empresa Unida</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📊</span>
+                                        <span>Informes: 3</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📅</span>
+                                        <span>Último: 12/10/2025</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="supervisor-actions">
+                                <button class="action-btn btn-alert">🔔 Enviar Alerta</button>
+                                <button class="dropdown-btn" onclick="toggleDropdown('reports-ml')">▼</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reports-dropdown" id="reports-ml">
+                            <div class="report-item">
+                                <div class="report-info">
+                                    <div class="report-title">Informe Trimestral Q3 2025</div>
+                                    <div class="report-date">12/10/2025</div>
+                                </div>
+                                <div class="report-actions">
+                                    <button class="btn-pdf">📄 Ver PDF</button>
+                                    <button class="btn-approve">✓ Aprobar</button>
+                                    <button class="btn-pending">⏳ Pendiente</button>
+                                </div>
+                            </div>
+                            <div class="report-item">
+                                <div class="report-info">
+                                    <div class="report-title">Informe de Seguimiento</div>
+                                    <div class="report-date">05/10/2025</div>
+                                </div>
+                                <div class="report-actions">
+                                    <button class="btn-pdf">📄 Ver PDF</button>
+                                    <button class="btn-approve">✓ Aprobar</button>
+                                    <button class="btn-pending">⏳ Pendiente</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="supervisor-card">
+                        <div class="supervisor-avatar">CT</div>
+                        <div class="supervisor-info">
+                            <div class="supervisor-details">
+                                <div class="supervisor-name">Carlos Torres Ruiz</div>
+                                <div class="supervisor-meta">
+                                    <div class="meta-item">
+                                        <span>📄</span>
+                                        <span>Convenio: Innovatech Solutions</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📊</span>
+                                        <span>Informes: 7</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📅</span>
+                                        <span>Último: 18/10/2025</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="supervisor-actions">
+                                <button class="action-btn btn-alert">🔔 Enviar Alerta</button>
+                                <button class="dropdown-btn" onclick="toggleDropdown('reports-ct')">▼</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reports-dropdown" id="reports-ct">
+                            <div class="report-item">
+                                <div class="report-info">
+                                    <div class="report-title">Informe Mensual Octubre</div>
+                                    <div class="report-date">18/10/2025</div>
+                                </div>
+                                <div class="report-actions">
+                                    <button class="btn-pdf">📄 Ver PDF</button>
+                                    <button class="btn-approve">✓ Aprobar</button>
+                                    <button class="btn-pending">⏳ Pendiente</button>
+                                </div>
+                            </div>
+                            <div class="report-item">
+                                <div class="report-info">
+                                    <div class="report-title">Informe de Evaluación</div>
+                                    <div class="report-date">10/10/2025</div>
+                                </div>
+                                <div class="report-actions">
+                                    <button class="btn-pdf">📄 Ver PDF</button>
+                                    <button class="btn-approve">✓ Aprobar</button>
+                                    <button class="btn-pending">⏳ Pendiente</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="supervisor-card">
+                        <div class="supervisor-avatar">AR</div>
+                        <div class="supervisor-info">
+                            <div class="supervisor-details">
+                                <div class="supervisor-name">Ana Rodríguez Silva</div>
+                                <div class="supervisor-meta">
+                                    <div class="meta-item">
+                                        <span>📄</span>
+                                        <span>Convenio: Centro de Bienestar Integral</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📊</span>
+                                        <span>Informes: 4</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📅</span>
+                                        <span>Último: 20/10/2025</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="supervisor-actions">
+                                <button class="action-btn btn-alert">🔔 Enviar Alerta</button>
+                                <button class="dropdown-btn" onclick="toggleDropdown('reports-ar')">▼</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reports-dropdown" id="reports-ar">
+                            <div class="report-item">
+                                <div class="report-info">
+                                    <div class="report-title">Informe de Bienestar Social</div>
+                                    <div class="report-date">20/10/2025</div>
+                                </div>
+                                <div class="report-actions">
+                                    <button class="btn-pdf">📄 Ver PDF</button>
+                                    <button class="btn-approve">✓ Aprobar</button>
+                                    <button class="btn-pending">⏳ Pendiente</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="supervisor-card">
+                        <div class="supervisor-avatar">LG</div>
+                        <div class="supervisor-info">
+                            <div class="supervisor-details">
+                                <div class="supervisor-name">Luis Gómez Martínez</div>
+                                <div class="supervisor-meta">
+                                    <div class="meta-item">
+                                        <span>📄</span>
+                                        <span>Convenio: Hospital Regional Norte</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📊</span>
+                                        <span>Informes: 2</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span>📅</span>
+                                        <span>Último: 08/10/2025</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="supervisor-actions">
+                                <button class="action-btn btn-alert">🔔 Enviar Alerta</button>
+                                <button class="dropdown-btn" onclick="toggleDropdown('reports-lg')">▼</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reports-dropdown" id="reports-lg">
+                            <div class="report-item">
+                                <div class="report-info">
+                                    <div class="report-title">Informe Hospitalario</div>
+                                    <div class="report-date">08/10/2025</div>
+                                </div>
+                                <div class="report-actions">
+                                    <button class="btn-pdf">📄 Ver PDF</button>
+                                    <button class="btn-approve">✓ Aprobar</button>
+                                    <button class="btn-pending">⏳ Pendiente</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+                </div>
+
+    <script>
+        function toggleDropdown(dropdownId) {
+            // Cerrar todos los otros dropdowns
+            const allDropdowns = document.querySelectorAll('.reports-dropdown');
+            const allButtons = document.querySelectorAll('.dropdown-btn');
+            
+            allDropdowns.forEach(d => {
+                if (d.id !== dropdownId) {
+                    d.classList.remove('active');
+                }
+            });
+            
+            allButtons.forEach(b => {
+                if (b.onclick && b.onclick.toString().includes(dropdownId)) {
+                    // Este es el botón correcto, no lo toquemos aún
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+            
+            // Toggle el dropdown actual
+            const dropdown = document.getElementById(dropdownId);
+            const button = document.querySelector(`[onclick*="${dropdownId}"]`);
+            
+            if (dropdown) {
+                dropdown.classList.toggle('active');
+            }
+            if (button) {
+                button.classList.toggle('active');
+            }
+        }
+
+        // Cerrar dropdowns al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.supervisor-card')) {
+                const allDropdowns = document.querySelectorAll('.reports-dropdown');
+                const allButtons = document.querySelectorAll('.dropdown-btn');
+                
+                allDropdowns.forEach(d => d.classList.remove('active'));
+                allButtons.forEach(b => b.classList.remove('active'));
+            }
+        });
+
+        // Funciones para los botones de acción
+        function viewPDF(reportTitle) {
+            alert(`Abriendo PDF: ${reportTitle}`);
+            // Aquí se implementaría la lógica para abrir el PDF
+        }
+
+        function approveReport(reportTitle) {
+            if (confirm(`¿Está seguro de aprobar el informe: ${reportTitle}?`)) {
+                alert(`Informe "${reportTitle}" aprobado exitosamente`);
+                // Aquí se implementaría la lógica para aprobar el informe
+            }
+        }
+
+        function markAsPending(reportTitle) {
+            if (confirm(`¿Marcar como pendiente el informe: ${reportTitle}?`)) {
+                alert(`Informe "${reportTitle}" marcado como pendiente`);
+                // Aquí se implementaría la lógica para marcar como pendiente
+            }
+        }
+
+        // Agregar event listeners a los botones
+        document.addEventListener('DOMContentLoaded', function() {
+            const pdfButtons = document.querySelectorAll('.btn-pdf');
+            const approveButtons = document.querySelectorAll('.btn-approve');
+            const pendingButtons = document.querySelectorAll('.btn-pending');
+
+            pdfButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const reportTitle = this.closest('.report-item').querySelector('.report-title').textContent;
+                    viewPDF(reportTitle);
+                });
+            });
+
+            approveButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const reportTitle = this.closest('.report-item').querySelector('.report-title').textContent;
+                    approveReport(reportTitle);
+                });
+            });
+
+            pendingButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const reportTitle = this.closest('.report-item').querySelector('.report-title').textContent;
+                    markAsPending(reportTitle);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

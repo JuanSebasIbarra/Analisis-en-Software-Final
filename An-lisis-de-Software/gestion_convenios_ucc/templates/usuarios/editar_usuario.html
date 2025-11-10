@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Usuario - UCC{% endblock %}
+
+{% block content %}
+<h1 class="page-title">✏️ Editar Usuario</h1>
+<div class="breadcrumb">Inicio > Gestión de usuarios > Editar usuario</div>
+
+<div class="table-container">
+    <div style="padding: 30px;">
+        <h2 style="margin-bottom: 20px; color: #333;">Formulario de Edición de Usuario</h2>
+        <p style="color: #666; margin-bottom: 30px;">Modifica la información del usuario seleccionado.</p>
+        
+        <form method="post" style="display: grid; gap: 20px;">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="first_name" class="form-input" value="{{ usuario.first_name }}" placeholder="Nombre del usuario">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Apellido</label>
+                    <input type="text" name="last_name" class="form-input" value="{{ usuario.last_name }}" placeholder="Apellido del usuario">
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label class="form-label">Usuario</label>
+                    <input type="text" name="username" class="form-input" value="{{ usuario.username }}" placeholder="Nombre de usuario" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-input" value="{{ usuario.email }}" placeholder="Correo electrónico">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Rol</label>
+                <select name="rol" class="form-input">
+                    <option value="">Seleccione el rol</option>
+                    <option value="admin" {% if usuario.perfilusuario.rol == 'admin' %}selected{% endif %}>Administrador</option>
+                    <option value="supervisor" {% if usuario.perfilusuario.rol == 'supervisor' %}selected{% endif %}>Supervisor</option>
+                    <option value="estudiante" {% if usuario.perfilusuario.rol == 'estudiante' %}selected{% endif %}>Estudiante</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Nueva Contraseña (opcional)</label>
+                <input type="password" name="password" class="form-input" placeholder="Dejar vacío para mantener la actual">
+            </div>
+            
+            <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px;">
+                <a href="/usuarios/" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

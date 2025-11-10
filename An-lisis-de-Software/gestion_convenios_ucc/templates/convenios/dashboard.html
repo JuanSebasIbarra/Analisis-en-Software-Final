@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Gestión de Convenios{% endblock %}
+
+{% block content %}
+<h1 class="page-title">📊 Dashboard - Gestión de Convenios</h1>
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card green">
+        <div class="stat-label">Convenios Activos</div>
+        <div class="stat-value">{{ convenios_activos }}</div>
+    </div>
+    <div class="stat-card yellow">
+        <div class="stat-label">Por Vencer (2 meses)</div>
+        <div class="stat-value">{{ convenios_por_vencer }}</div>
+    </div>
+    <div class="stat-card red">
+        <div class="stat-label">Vencidos</div>
+        <div class="stat-value">{{ convenios_vencidos }}</div>
+    </div>
+    <div class="stat-card blue">
+        <div class="stat-label">Informes Pendientes</div>
+        <div class="stat-value">{{ informes_pendientes }}</div>
+    </div>
+    <div class="stat-card purple">
+        <div class="stat-label">Supervisores Activos</div>
+        <div class="stat-value">{{ supervisores_activos }}</div>
+    </div>
+    <div class="stat-card orange">
+        <div class="stat-label">Propuestas Estudiantes</div>
+        <div class="stat-value">{{ propuestas_estudiantes }}</div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+    <div class="stat-card">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #333;">📊 Distribución por Tipo de Convenio</h3>
+        <div style="height: 250px; background: linear-gradient(135deg, #f5f7fa 0%, #e8f0fe 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 14px;">
+            {% for tipo in distribucion_tipos %}
+                {{ tipo.tipo|title }}: {{ tipo.total }} | 
+            {% endfor %}
+        </div>
+    </div>
+    <div class="stat-card">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #333;">📅 Línea de Tiempo - Vencimientos</h3>
+        <div style="height: 250px; background: linear-gradient(135deg, #f5f7fa 0%, #e8f0fe 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 14px;">
+            Próximos 6 meses: Visualización temporal
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="table-container" style="margin-bottom: 20px;">
+    <div style="padding: 20px 25px; background: #f8f9fa; border-bottom: 2px solid #e8e8e8;">
+        <h2 style="font-size: 20px; font-weight: 600; color: #333;">📋 Actividades Recientes</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Acción</th>
+                <th>Responsable</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for actividad in actividades_recientes %}
+            <tr>
+                <td>{{ actividad.fecha_creacion|date:"d/m/Y" }}</td>
+                <td>{{ actividad.titulo }}</td>
+                <td>{{ actividad.responsable.get_full_name|default:actividad.responsable.username }}</td>
+                <td>
+                    {% if actividad.completada %}
+                        <span class="status-badge status-aprobado">Completada</span>
+                    {% else %}
+                        <span class="status-badge status-pendiente">En progreso</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center; color: #666;">No hay actividades recientes</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Alerts Section -->
+<div class="table-container" style="margin-bottom: 20px;">
+    <div style="padding: 20px 25px; background: #f8f9fa; border-bottom: 2px solid #e8e8e8; display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="font-size: 20px; font-weight: 600; color: #333;">🔔 Alertas Automáticas - Convenios por Vencer</h2>
+        <button class="btn btn-primary">⚙️ Configurar alertas</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Convenio</th>
+                <th>Fecha de Vencimiento</th>
+                <th>Supervisor</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for convenio in convenios_por_vencer_detalle %}
+            <tr>
+                <td>{{ convenio.empresa_entidad }}</td>
+                <td>{{ convenio.fecha_vencimiento|date:"d/m/Y" }}</td>
+                <td>{{ convenio.supervisor.get_full_name|default:convenio.supervisor.username }}</td>
+                <td>
+                    {% if convenio.esta_por_vencer %}
+                        <span class="status-badge status-por-vencer">🔶 Por vencer</span>
+                    {% elif convenio.esta_vencido %}
+                        <span class="status-badge status-vencido">🔴 Vencido</span>
+                    {% else %}
+                        <span class="status-badge status-activo">🟢 Activo</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center; color: #666;">No hay convenios por vencer</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Users Management -->
+<div class="table-container">
+    <div style="padding: 20px 25px; background: #f8f9fa; border-bottom: 2px solid #e8e8e8; display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="font-size: 20px; font-weight: 600; color: #333;">👥 Gestión de Usuarios</h2>
+        <a href="/usuarios/" class="btn btn-primary">➕ Ver todos los usuarios</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Opciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Juan Pérez</td>
+                <td>Supervisor</td>
+                <td><span class="status-badge status-activo">Activo</span></td>
+                <td>
+                    <div style="display: flex; gap: 15px;">
+                        <a href="#" style="color: #2196F3; cursor: pointer; font-size: 13px; text-decoration: none;">✏️ Editar</a>
+                        <a href="#" style="color: #2196F3; cursor: pointer; font-size: 13px; text-decoration: none;">🚫 Desactivar</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>María López</td>
+                <td>Estudiante</td>
+                <td><span class="status-badge status-activo">Activo</span></td>
+                <td>
+                    <div style="display: flex; gap: 15px;">
+                        <a href="#" style="color: #2196F3; cursor: pointer; font-size: 13px; text-decoration: none;">👁️ Ver convenios</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Admin principal</td>
+                <td>Admin</td>
+                <td><span class="status-badge status-activo">Activo</span></td>
+                <td>—</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

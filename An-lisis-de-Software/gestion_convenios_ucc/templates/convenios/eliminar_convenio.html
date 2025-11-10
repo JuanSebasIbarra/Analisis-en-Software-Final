@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar Convenio - UCC{% endblock %}
+
+{% block content %}
+<h1 class="page-title">🗑️ Eliminar Convenio</h1>
+<div class="breadcrumb">Inicio > Gestión de convenios > Eliminar convenio</div>
+
+<div class="table-container">
+    <div style="padding: 30px;">
+        <div style="background: #ffebee; border: 1px solid #ffcdd2; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+            <h3 style="color: #c62828; margin-bottom: 10px;">⚠️ Confirmar Eliminación</h3>
+            <p style="color: #666; margin: 0;">¿Estás seguro de que deseas eliminar este convenio? Esta acción no se puede deshacer.</p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            <div>
+                <h3 style="margin-bottom: 20px; color: #333;">Información del Convenio</h3>
+                <div style="display: grid; gap: 15px;">
+                    <div>
+                        <strong>Empresa/Entidad:</strong> {{ convenio.empresa_entidad }}
+                    </div>
+                    <div>
+                        <strong>Tipo:</strong> {{ convenio.get_tipo_display }}
+                    </div>
+                    <div>
+                        <strong>Estado:</strong> 
+                        {% if convenio.estado == 'activo' %}
+                            <span class="status-badge status-activo">🟢 Activo</span>
+                        {% elif convenio.estado == 'por_vencer' %}
+                            <span class="status-badge status-por-vencer">🟡 Por vencer</span>
+                        {% elif convenio.estado == 'vencido' %}
+                            <span class="status-badge status-vencido">🔴 Vencido</span>
+                        {% else %}
+                            <span class="status-badge status-pendiente">{{ convenio.get_estado_display }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <strong>Fecha de Inicio:</strong> {{ convenio.fecha_inicio|date:"d/m/Y" }}
+                    </div>
+                    <div>
+                        <strong>Fecha de Vencimiento:</strong> {{ convenio.fecha_vencimiento|date:"d/m/Y" }}
+                    </div>
+                    <div>
+                        <strong>Supervisor:</strong> {{ convenio.supervisor.get_full_name|default:convenio.supervisor.username }}
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <h3 style="margin-bottom: 20px; color: #333;">Descripción</h3>
+                <p style="color: #666; line-height: 1.6;">{{ convenio.descripcion|default:"No hay descripción disponible." }}</p>
+            </div>
+        </div>
+        
+        <form method="post" style="margin-top: 40px;">
+            {% csrf_token %}
+            <div style="display: flex; gap: 15px; justify-content: flex-end;">
+                <a href="/convenios/" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este convenio?')">
+                    🗑️ Eliminar Convenio
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.btn-danger {
+    background: #d32f2f;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-danger:hover {
+    background: #b71c1c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+}
+</style>
+{% endblock %}

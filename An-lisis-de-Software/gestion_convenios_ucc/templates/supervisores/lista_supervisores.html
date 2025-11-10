@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block title %}Supervisión e Informes - UCC{% endblock %}
+
+{% block content %}
+<h1 class="page-title">👁️ Supervisión e Informes</h1>
+<div class="breadcrumb">Inicio > Supervisión e informes</div>
+
+<!-- Stats Cards -->
+<div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="stat-card">
+        <div style="width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: #e3f2fd;">👥</div>
+        <div style="flex: 1;">
+            <div style="font-size: 28px; font-weight: bold; line-height: 1; color: #333;">{{ supervisores_activos }}</div>
+            <div style="font-size: 13px; color: #777; margin-top: 5px;">Supervisores Activos</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div style="width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: #e8f5e9;">✓</div>
+        <div style="flex: 1;">
+            <div style="font-size: 28px; font-weight: bold; line-height: 1; color: #333;">{{ informes_aprobados }}</div>
+            <div style="font-size: 13px; color: #777; margin-top: 5px;">Informes Aprobados</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div style="width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: #fff8e1;">⏳</div>
+        <div style="flex: 1;">
+            <div style="font-size: 28px; font-weight: bold; line-height: 1; color: #333;">{{ informes_pendientes }}</div>
+            <div style="font-size: 13px; color: #777; margin-top: 5px;">Informes Pendientes</div>
+        </div>
+    </div>
+</div>
+
+<!-- Supervisores con Convenios Asignados -->
+<div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
+    <div style="padding: 25px 25px 0 25px; display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 10px;">👥 Supervisores con Convenios Asignados</h2>
+    </div>
+    
+    <div style="padding: 0 25px 25px 25px;">
+        {% for supervisor in supervisores %}
+        <div style="display: flex; align-items: center; padding: 20px; border-radius: 10px; margin-bottom: 15px; background: #fafafa; transition: all 0.3s;">
+            <div style="width: 60px; height: 60px; border-radius: 50%; background: #4CAF50; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; margin-right: 20px;">
+                {{ supervisor.iniciales }}
+            </div>
+            <div style="flex: 1; display: flex; align-items: center; gap: 30px;">
+                <div style="flex: 1;">
+                    <div style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 5px;">{{ supervisor.nombre_completo }}</div>
+                    <div style="display: flex; align-items: center; gap: 20px; font-size: 14px; color: #666;">
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <span>📄</span>
+                            <span>Convenios: {{ supervisor.convenios_asignados.count }}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <span>📊</span>
+                            <span>Informes: {{ supervisor.total_informes }}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <span>📅</span>
+                            <span>Último: {{ supervisor.user.last_login|date:"d/m/Y"|default:"Nunca" }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <a href="/supervisores/{{ supervisor.id }}/enviar-alerta/" style="padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.3s; display: flex; align-items: center; gap: 5px; background: #FFC107; color: white; text-decoration: none;">🔔 Enviar Alerta</a>
+                    <button onclick="toggleDropdown('reports-{{ supervisor.id }}')" style="background: none; border: none; cursor: pointer; font-size: 16px; color: #666; transition: transform 0.3s;">▼</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reports Dropdown -->
+        <div id="reports-{{ supervisor.id }}" style="display: none; background: white; border-radius: 8px; margin-top: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; position: relative; z-index: 10;">
+            {% for informe in supervisor.user.informes.all|slice:":3" %}
+            <div style="padding: 15px 20px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; transition: background 0.3s;">
+                <div style="flex: 1;">
+                    <div style="font-weight: 600; color: #333; margin-bottom: 5px;">{{ informe.titulo }}</div>
+                    <div style="font-size: 12px; color: #666;">{{ informe.fecha_entrega|date:"d/m/Y" }}</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button style="background: #2196F3; color: white; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; font-size: 11px; font-weight: 500; transition: background 0.3s;">📄 Ver PDF</button>
+                    {% if informe.estado == 'pendiente' %}
+                    <button style="background: #4CAF50; color: white; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; font-size: 11px; font-weight: 500; transition: background 0.3s;">✓ Aprobar</button>
+                    <button style="background: #FF9800; color: white; padding: 6px 12px; border-radius: 4px; border: none; cursor: pointer; font-size: 11px; font-weight: 500; transition: background 0.3s;">⏳ Pendiente</button>
+                    {% elif informe.estado == 'aprobado' %}
+                    <span style="background: #e8f5e9; color: #2e7d32; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 500;">✅ Aprobado</span>
+                    {% else %}
+                    <span style="background: #ffebee; color: #c62828; padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 500;">❌ Rechazado</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div style="padding: 20px; text-align: center; color: #666;">No hay informes disponibles</div>
+            {% endfor %}
+        </div>
+        {% empty %}
+        <div style="padding: 20px; text-align: center; color: #666;">No hay supervisores registrados</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleDropdown(dropdownId) {
+        // Cerrar todos los otros dropdowns
+        const allDropdowns = document.querySelectorAll('[id^="reports-"]');
+        const allButtons = document.querySelectorAll('button[onclick*="toggleDropdown"]');
+        
+        allDropdowns.forEach(d => {
+            if (d.id !== dropdownId) {
+                d.style.display = 'none';
+            }
+        });
+        
+        allButtons.forEach(b => {
+            if (b.onclick && b.onclick.toString().includes(dropdownId)) {
+                // Este es el botón correcto, no lo toquemos aún
+            } else {
+                b.classList.remove('active');
+            }
+        });
+        
+        // Toggle el dropdown actual
+        const dropdown = document.getElementById(dropdownId);
+        const button = document.querySelector(`[onclick*="${dropdownId}"]`);
+        
+        if (dropdown) {
+            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                dropdown.style.display = 'block';
+                if (button) button.classList.add('active');
+            } else {
+                dropdown.style.display = 'none';
+                if (button) button.classList.remove('active');
+            }
+        }
+    }
+
+    // Cerrar dropdowns al hacer clic fuera
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('[id^="reports-"]') && !event.target.closest('button[onclick*="toggleDropdown"]')) {
+            const allDropdowns = document.querySelectorAll('[id^="reports-"]');
+            const allButtons = document.querySelectorAll('button[onclick*="toggleDropdown"]');
+            
+            allDropdowns.forEach(d => d.style.display = 'none');
+            allButtons.forEach(b => b.classList.remove('active'));
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Convenios - UCC{% endblock %}
+
+{% block content %}
+<h1 class="page-title">📋 Gestión de Convenios</h1>
+<div class="breadcrumb">Inicio > Gestión de convenios</div>
+
+<!-- Stats Summary -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div style="width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: #e8f5e9;">✓</div>
+        <div style="flex: 1;">
+            <div style="font-size: 28px; font-weight: bold; line-height: 1; color: #4CAF50;">{{ convenios_activos_count }}</div>
+            <div style="font-size: 13px; color: #777; margin-top: 5px;">Convenios Activos</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div style="width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: #fff8e1;">⚠</div>
+        <div style="flex: 1;">
+            <div style="font-size: 28px; font-weight: bold; line-height: 1; color: #FFA000;">{{ convenios_por_vencer_count }}</div>
+            <div style="font-size: 13px; color: #777; margin-top: 5px;">Por Vencer</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div style="width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: #ffebee;">✕</div>
+        <div style="flex: 1;">
+            <div style="font-size: 28px; font-weight: bold; line-height: 1; color: #F44336;">{{ convenios_vencidos_count }}</div>
+            <div style="font-size: 13px; color: #777; margin-top: 5px;">Vencidos</div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters Section -->
+<div class="filters-section">
+    <div class="filter-group">
+        <label class="filter-label">Estado</label>
+        <select>
+            <option value="todos" {% if not filtros.estado or filtros.estado == 'todos' %}selected{% endif %}>Todos los estados</option>
+            <option value="activo" {% if filtros.estado == 'activo' %}selected{% endif %}>Activos</option>
+            <option value="por_vencer" {% if filtros.estado == 'por_vencer' %}selected{% endif %}>Por vencer</option>
+            <option value="vencido" {% if filtros.estado == 'vencido' %}selected{% endif %}>Vencidos</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <label class="filter-label">Tipo</label>
+        <select>
+            <option value="todos" {% if not filtros.tipo or filtros.tipo == 'todos' %}selected{% endif %}>Todos los tipos</option>
+            <option value="marco" {% if filtros.tipo == 'marco' %}selected{% endif %}>Marco</option>
+            <option value="practicas" {% if filtros.tipo == 'practicas' %}selected{% endif %}>Prácticas</option>
+            <option value="bienestar" {% if filtros.tipo == 'bienestar' %}selected{% endif %}>Bienestar</option>
+        </select>
+    </div>
+    <div class="filter-group">
+        <label class="filter-label">Fecha desde</label>
+        <input type="date" value="{{ filtros.fecha_desde|default:'' }}">
+    </div>
+    <div class="filter-group">
+        <label class="filter-label">Fecha hasta</label>
+        <input type="date" value="{{ filtros.fecha_hasta|default:'' }}">
+    </div>
+</div>
+
+<!-- Table -->
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Empresa / Entidad</th>
+                <th>Tipo</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Vencimiento</th>
+                <th>Estado</th>
+                <th>Supervisor</th>
+                <th>Actividades</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for convenio in convenios %}
+            <tr>
+                <td><strong>{{ convenio.empresa_entidad }}</strong></td>
+                <td>{{ convenio.get_tipo_display }}</td>
+                <td>{{ convenio.fecha_inicio|date:"d/m/Y" }}</td>
+                <td>{{ convenio.fecha_vencimiento|date:"d/m/Y" }}</td>
+                <td>
+                    {% if convenio.estado == 'activo' %}
+                        <span class="status-badge status-activo">🟢 Activo</span>
+                    {% elif convenio.estado == 'por_vencer' %}
+                        <span class="status-badge status-por-vencer">🟡 Por vencer</span>
+                    {% elif convenio.estado == 'vencido' %}
+                        <span class="status-badge status-vencido">🔴 Vencido</span>
+                    {% elif convenio.estado == 'revision' %}
+                        <span class="status-badge status-pendiente">🔵 En revisión</span>
+                    {% elif convenio.estado == 'aprobado' %}
+                        <span class="status-badge status-aprobado">✅ Aprobado</span>
+                    {% elif convenio.estado == 'rechazado' %}
+                        <span class="status-badge status-rechazado">❌ Rechazado</span>
+                    {% else %}
+                        <span class="status-badge status-pendiente">{{ convenio.get_estado_display }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ convenio.supervisor.get_full_name|default:convenio.supervisor.username }}</td>
+                <td>
+                    <div class="action-btns">
+                        <a href="/convenios/{{ convenio.id }}/" class="action-btn btn-view">👁️ Ver</a>
+                        <a href="/convenios/{{ convenio.id }}/editar/" class="action-btn btn-edit">✏️ Editar</a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: #666;">No hay convenios registrados</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div style="margin-top: 20px;">
+    <a href="/convenios/crear/" class="btn btn-primary">➕ Crear nuevo convenio</a>
+</div>
+{% endblock %}
